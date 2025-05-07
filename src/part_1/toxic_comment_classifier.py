@@ -10,7 +10,7 @@ from pyspark.sql import SparkSession, Row
 from pyspark.sql import functions as F
 from pyspark.sql.functions import col, udf, countDistinct, sum, count, mean, isnan, asc, desc #note we overwrite native python sum
 import pyspark.sql.types as T
-from pyspark.sql.types import StringType
+from pyspark.sql.types import StringType, FloatType
 
 import sys
 
@@ -55,4 +55,41 @@ df_test = spark.read.format("csv").option("header", True).load(local_test_path)
 # df = spark.read.format("csv").option("header", True).load(df_path)
 
 
-out_cols = [i for i in train.columns if i not in ["id", "comment_text"]]
+out_cols = [i for i in df_train.columns if i not in ["id", "comment_text"]]
+
+
+tokenizer = Tokenizer(inputCol="comment_text", outputCol="words")
+wordsData = tokenizer.transforn(df_train)
+
+hashingTF = HashingTF(inputCol="words", outputCol="rawFeatures")
+tf = hashingTF.transform(wordsData)
+
+
+idf = IDF(inputCol="rawFeatures", outputCol="features")
+idfModel = idf.fit(tf)
+tfidf = idfModel.transform(tf)
+
+tfidf.select("features").first()
+
+
+REG = 1.0
+lr = LogisticRegression(featuresCol="features", labelCol="toxic", regParam=REG)
+
+
+tfidf.show(5)
+
+lrModel = lr.fit(tfidf.limit(5000))
+
+res_train = lrModel.transform(tfidf)
+
+res_train.select("id", "toxic", "probability", "prediction").show(20)
+
+res_train.show(5)
+
+extract_prob = udf(lambda x: float(x[1]), FloatType())
+
+(
+    res_train.withColumn("proba", extract_prob("probability"))
+    .select("proba", "prediction")
+    .show()
+)
