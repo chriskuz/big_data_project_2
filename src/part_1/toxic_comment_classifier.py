@@ -120,6 +120,7 @@ toxic_col_relationship = (
         )
     )
 )
+print("\n Showing the relationship of toxic against other calssifications. Note that there isn't total coincidence, verifying that a blank 'toxic' term is not applied to every toxic comment. \n")
 toxic_col_relationship.show()
 
 ### MODEL ###
@@ -141,87 +142,7 @@ reg_param = 1
 #df_train model gen
 for label in labels:
     df_result = classify_me(transformed_df_train, label, reg_param, 5000)
-    print(f"Showing training sample model output for {label} column probability....\n")
+    print(f"\nShowing training sample model output for {label} column probability....\n")
     # df_result.select("id", label, "probability", "prediction").show(10)
-    df_result.withColumn("extracted_probability", probability_extraction("probability")).select("comment_text", label, "extracted_probabilty", "prediction").show(40)
+    df_result.withColumn("extracted_probability", probability_extraction("probability")).select("comment_text", label, "extracted_probability", "prediction").show(40)
     result_dfs.append(df_result)
-
-
-for label in labels:
-    df_result = classify_me(transformed_df_test, label, reg_param, 5000)
-    print(f"Showing testing sample model output for {label} column probability....\n")
-    # df_result.select("id", label, "probability", "prediction").show(10)
-    df_result.withColumn("extracted_probability", probability_extraction("probability")).select("comment_text", label, "extracted_probabilty", "prediction").show(40)
-
-    result_dfs.append(df_result)
-
-
-
-
-
-# output_example = 
-
-(
-    res_train.withColumn("proba", extract_prob("probability"))
-    .select("comment_text", "toxic", "severe_toxic", "obscene", "threat", "insult", "proba", "prediction")
-    .show()
-)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# tokenizer = Tokenizer(inputCol="comment_text", outputCol="words")
-# wordsData = tokenizer.transform(df_train)
-
-# hashingTF = HashingTF(inputCol="words", outputCol="rawFeatures")
-# tf = hashingTF.transform(wordsData)
-
-
-# idf = IDF(inputCol="rawFeatures", outputCol="features")
-# idfModel = idf.fit(tf)
-# tfidf = idfModel.transform(tf)
-
-# tfidf.select("features").first()
-
-
-# REG = 1.0
-# lr = LogisticRegression(featuresCol="features", labelCol="toxic", regParam=REG)
-
-
-# # tfidf.show(5)
-
-# lrModel = lr.fit(tfidf.limit(5000))
-
-# res_train = lrModel.transform(tfidf)
-
-# res_train.select("id", "toxic", "probability", "prediction").show(20)
-
-# res_train.show(5)
-
-# extract_prob = udf(lambda x: float(x[1]), FloatType())
-
-# (
-#     res_train.withColumn("proba", extract_prob("probability"))
-#     .select("proba", "prediction")
-#     .show()
-# )
-
-
-# # What should maybe happen
-# # Split the training data up
-# # Do the modeling on parts of the data
-# # Since it's a few models (6 corresponding to 6 labels), we don't have to worry about going too deep with parallelization
