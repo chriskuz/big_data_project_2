@@ -43,6 +43,9 @@ def classify_me(df, label_col, reg_param, line_limit=5000):
     return df_results
 
 
+probability_extraction = udf(lambda x: float(x[1]), FloatType())
+
+
 ### SPARK INSTANTIATION ###
 #TODO: check notes if the spark builder needs adjustments
 #spark builder
@@ -138,37 +141,31 @@ reg_param = 1
 #df_train model gen
 for label in labels:
     df_result = classify_me(transformed_df_train, label, reg_param, 5000)
-    print(f"Showing sample model output for {label} column probabilitty....\n")
-    df_result.select("id", label, "probability", "prediction").show(10)
+    print(f"Showing training sample model output for {label} column probability....\n")
+    # df_result.select("id", label, "probability", "prediction").show(10)
+    df_result.withColumn("extracted_probability", probability_extraction("probability")).select("comment_text", label, "extracted_probabilty", "prediction").show(40)
     result_dfs.append(df_result)
 
-print(len(result_dfs))
-# print("Showing sample model output....\n")
-# df_results.select("id", label_col, "probability", "prediction").show(10)
+
+for label in labels:
+    df_result = classify_me(transformed_df_test, label, reg_param, 5000)
+    print(f"Showing testing sample model output for {label} column probability....\n")
+    # df_result.select("id", label, "probability", "prediction").show(10)
+    df_result.withColumn("extracted_probability", probability_extraction("probability")).select("comment_text", label, "extracted_probabilty", "prediction").show(40)
+
+    result_dfs.append(df_result)
 
 
-# REG = 1.0 #regularization parameter
-# lr = LogisticRegression(featuresCol="features", labelCol="toxic", regParam=REG)
 
-# tfidf.show(5)
 
-# lrModel = lr.fit(transformed_df_train.limit(5000))
-
-# res_train = lrModel.transform(transformed_df_train)
-
-# res_train.select("id", "toxic", "probability", "prediction").show(20)
-
-# res_train.show(5)
-
-# extract_prob = udf(lambda x: float(x[1]), FloatType())
 
 # output_example = 
 
-# (
-#     res_train.withColumn("proba", extract_prob("probability"))
-#     .select("comment_text", "toxic", "severe_toxic", "obscene", "threat", "insult", "proba", "prediction")
-#     .show()
-# )
+(
+    res_train.withColumn("proba", extract_prob("probability"))
+    .select("comment_text", "toxic", "severe_toxic", "obscene", "threat", "insult", "proba", "prediction")
+    .show()
+)
 
 
 
