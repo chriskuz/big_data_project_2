@@ -1,0 +1,1 @@
+Goal: the goal of this is to use a Spark ML flow to determine the probability of each type of toxicity for each comments
