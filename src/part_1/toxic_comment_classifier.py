@@ -126,7 +126,7 @@ toxic_col_relationship.show()
 ### MODEL ###
 
 
-## Prep
+## Model Prep
 transformed_df_train = prep_engineering(df_train)
 transformed_df_test = prep_engineering(df_test)
 
