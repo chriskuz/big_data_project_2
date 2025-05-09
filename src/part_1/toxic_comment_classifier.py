@@ -54,7 +54,7 @@ probability_extraction = udf(lambda x: float(x[1]), FloatType())
 spark = (
     SparkSession.builder
     .appName("toxic_commnt_classifier")
-    .master("local[*]") #REMOVE ON CLOUD #bypasses scheduler and uses all cores...good for local dev
+    #.master("local[*]") #REMOVE ON CLOUD #bypasses scheduler and uses all cores...good for local dev
     # .config("spark.driver.bindAddress", "127.0.0.1") #REMOVE ON CLOUD #sets driver to avoid any network traffic and all done local
     .getOrCreate()
 )
@@ -70,54 +70,54 @@ sc.setLogLevel("ERROR")  # or "WARN"
 ### DATA ###
 ## Load Data
 
-#LOCAL
-local_train_path = "../../data/part_1/train.csv"
-local_test_path = "../../data/part_1/test.csv"
-df_train = (
-    spark.read
-    .format("csv")
-    .option("header", True)
-    .option("multiline", True)
-    .option("quote", '"')
-    .option("escape", '"')
-    .option("inferSchema", True)
-    .load(local_train_path)
-)
-df_test = (
-    spark.read
-    .format("csv")
-    .option("header", True)
-    .option("multiline", True)
-    .option("quote", '"')
-    .option("escape", '"')
-    .option("inferSchema", True)
-    .load(local_test_path)
-)
+##LOCAL
+#local_train_path = "../../data/part_1/train.csv"
+#local_test_path = "../../data/part_1/test.csv"
+#df_train = (
+#    spark.read
+#    .format("csv")
+#    .option("header", True)
+#    .option("multiline", True)
+#    .option("quote", '"')
+#    .option("escape", '"')
+#    .option("inferSchema", True)
+#    .load(local_train_path)
+#)
+#df_test = (
+#    spark.read
+#    .format("csv")
+#    .option("header", True)
+#    .option("multiline", True)
+#    .option("quote", '"')
+#    .option("escape", '"')
+#    .option("inferSchema", True)
+#    .load(local_test_path)
+#)
 
 #CLOUD
 #TODO: understand what the sys arguments are going to be here. ...also copy the format as shown above
-# local_train_path = sys.argv[n] #figure out what n is
-# local_test_path = sys.argv[m] #figure out what m is
-# df_train = (
-#     spark.read
-#     .format("csv")
-#     .option("header", True)
-#     .option("multiline", True)
-#     .option("quote", '"')
-#     .option("escape", '"')
-#     .option("inferSchema", True)
-#     .load(local_train_path)
-# )
-# df_test = (
-#     spark.read
-#     .format("csv")
-#     .option("header", True)
-#     .option("multiline", True)
-#     .option("quote", '"')
-#     .option("escape", '"')
-#     .option("inferSchema", True)
-#     .load(local_test_path)
-# )
+train_path = sys.argv[1]
+test_path = sys.argv[2] 
+df_train = (
+     spark.read
+     .format("csv")
+     .option("header", True)
+     .option("multiline", True)
+     .option("quote", '"')
+     .option("escape", '"')
+     .option("inferSchema", True)
+     .load(train_path)
+ )
+df_test = (
+     spark.read
+     .format("csv")
+     .option("header", True)
+     .option("multiline", True)
+     .option("quote", '"')
+     .option("escape", '"')
+     .option("inferSchema", True)
+     .load(test_path)
+ )
 
 toxic_col_relationship = (
     df_train
