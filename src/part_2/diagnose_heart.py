@@ -43,7 +43,15 @@ sc.setLogLevel("ERROR")  # or "WARN"
 
 #LOCAL
 local_df_path = "../../data/part_2/framingham.csv"
-df = spark.read.format("csv").option("header", True).option("InferSchema", True).load(local_df_path)
+
+df = (
+    spark.read
+    .format("csv")
+    .option("header", True)
+    .option("InferSchema", True)
+    .option("nullvalue", "NA")
+    .load(local_df_path)
+)
 
 #CLOUD 
 # cloud_df_path = sys.argv[1]
@@ -52,22 +60,25 @@ df = spark.read.format("csv").option("header", True).option("InferSchema", True)
 ## Cleaning
 num_rows = df.count()
 print(f"\nNumber of rows in Framingham Dataset: {num_rows}\n")
-# df.show(200)
+df.show(200)
 df.printSchema()
 
-# # Step 1: Count nulls per column
-# null_exprs = [sum(when(col(c).isNull(), 1).otherwise(0)).alias(c) for c in df.columns]
-# null_counts_df = df.select(null_exprs)
-# null_counts_df.show()
+# Step 1: Count nulls per column
+null_exprs = [sum(when(col(c).isNull(), 1).otherwise(0)).alias(c) for c in df.columns]
+null_counts_df = df.select(null_exprs)
+null_counts_df.show()
 
-# # Step 2: Sum all column null counts into one total value
-# total_nulls_expr = reduce(lambda a, b: a + b, [col(c) for c in null_counts_df.columns])
-# total_nulls = null_counts_df.select(total_nulls_expr.alias("total_nulls")).first()["total_nulls"]
+# Step 2: Sum all column null counts into one total value
+total_nulls_expr = reduce(lambda a, b: a + b, [col(c) for c in null_counts_df.columns])
+total_nulls = null_counts_df.select(total_nulls_expr.alias("total_nulls")).first()["total_nulls"]
 
-# print(f"Total nulls: {total_nulls}")
+print(f"Total nulls: {total_nulls}")
+print(f"The max possible null composition of the data: {total_nulls / num_rows}")
 
-# df = df.dropna()
-
+df = df.dropna()
+purified_num_rows = df.count()
+print(f"The new row count of the purified dataframe: {purified_num_rows} ")
+print(f"The purified dataframe's composition of the original: {purified_num_rows/num_rows}")
 
 #LASSO USE BEST FEATURES
 # lr = LogisticRegression(featuresCol="features", labelCol="label", 
