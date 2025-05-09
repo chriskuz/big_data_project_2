@@ -4,7 +4,7 @@ from __future__ import print_function
 
 from pyspark.ml.classification import LogisticRegression
 from pyspark.ml.evaluation import MulticlassClassificationEvaluator
-from pyspark.ml.feature import ChiSqSelector
+from pyspark.ml.feature import ChiSqSelector, VectorAssembler
 
 from pyspark.sql import SparkSession, Row
 from pyspark.sql import functions as F
@@ -16,7 +16,6 @@ import sys
 
 
 ### FUNCTIONS ###
-
 
 
 
@@ -64,9 +63,9 @@ df = (
 #     .load(cloud_df_path)
 # )
 
-
 #showcases data types
 df.printSchema()
+
 
 ## Cleaning
 
@@ -98,17 +97,47 @@ print(f"The purified dataframe's composition of the original: {purified_num_rows
 
 
 
-#LASSO USE BEST FEATURES
-# lr = LogisticRegression(featuresCol="features", labelCol="label", 
-#                         elasticNetParam=1.0, regParam=0.1)
-# model = lr.fit(data)
-# model.coefficients  # Sparse vector showing non-zero coefficients
+### MODEL ###
 
 
-#CHI SQUARED SELECTOR
-# selector = ChiSqSelector(numTopFeatures=50, 
-#                          featuresCol="features", 
-#                          outputCol="selectedFeatures", 
-#                          labelCol="label")
+feature_cols = [c for c in df.columns if c != "TenYearCHD"]
+assembler = VectorAssembler(inputCols=feature_cols, outputCol="features")
+df = assembler.transform(df)
 
-# result = selector.fit(data).transform(data)
+
+## Data Splitting (Post Cleaning)
+df_train, df_test = df.randomSplit([0.8, 0.2], seed=20250510)
+
+## Logistic Regression 
+
+#Training
+lr = LogisticRegression(featuresCol="features", labelCol="TenYearCHD", maxIter=10, regParam=0.1)
+lr_model = lr.fit(df_train)
+#Prediction on test
+predictions = lr_model.transform(df_test)
+
+## Evaluator
+
+#Model evaluation
+evaluator_acc = MulticlassClassificationEvaluator(labelCol="TenYearCHD", metricName="accuracy")
+evaluator_f1 = MulticlassClassificationEvaluator(labelCol="TenYearCHD", metricName="f1")
+evaluator_precision = MulticlassClassificationEvaluator(labelCol="TenYearCHD", metricName="weightedPrecision")
+evaluator_recall = MulticlassClassificationEvaluator(labelCol="TenYearCHD", metricName="weightedRecall")
+
+print(f"Accuracy: {evaluator_acc.evaluate(predictions):.4f}")
+print(f"F1 Score: {evaluator_f1.evaluate(predictions):.4f}")
+print(f"Precision: {evaluator_precision.evaluate(predictions):.4f}")
+print(f"Recall: {evaluator_recall.evaluate(predictions):.4f}")
+
+#Feature Importance
+# Convert NumPy float64 to native Python float
+feature_coeffs = [(name, float(coef)) for name, coef in zip(feature_cols, lr_model.coefficients)]
+
+# Now create the DataFrame safely
+importance_df = spark.createDataFrame(feature_coeffs, ["feature", "coefficient"])
+
+# Add absolute value column to sort by influence
+importance_df = importance_df.withColumn("abs_coefficient", F.abs(col("coefficient")))
+
+# Display top influential features
+importance_df.orderBy(col("abs_coefficient").desc()).show(truncate=False)
