@@ -96,14 +96,28 @@ df_test = (
 
 #CLOUD
 #TODO: understand what the sys arguments are going to be here. ...also copy the format as shown above
-# local_train_path = sys.argv[1]
-# local_test_path = sys.argv[1]
-# df = spark.read.format("csv").option("header", True).load(df_path)
-
-
-# out_cols = [i for i in df_train.columns if i not in ["id", "comment_text"]] #this is for saving
-
-# df_train, df_test = df.randomSplit([0.8, 0.2], seed=20250511) #we just show how we can split the data
+# local_train_path = sys.argv[n] #figure out what n is
+# local_test_path = sys.argv[m] #figure out what m is
+# df_train = (
+#     spark.read
+#     .format("csv")
+#     .option("header", True)
+#     .option("multiline", True)
+#     .option("quote", '"')
+#     .option("escape", '"')
+#     .option("inferSchema", True)
+#     .load(local_train_path)
+# )
+# df_test = (
+#     spark.read
+#     .format("csv")
+#     .option("header", True)
+#     .option("multiline", True)
+#     .option("quote", '"')
+#     .option("escape", '"')
+#     .option("inferSchema", True)
+#     .load(local_test_path)
+# )
 
 toxic_col_relationship = (
     df_train

@@ -93,6 +93,11 @@ purified_num_rows = df.count()
 print(f"The new row count of the purified dataframe: {purified_num_rows} ")
 print(f"The purified dataframe's composition of the original: {purified_num_rows/num_rows}")
 
+
+
+
+
+
 #LASSO USE BEST FEATURES
 # lr = LogisticRegression(featuresCol="features", labelCol="label", 
 #                         elasticNetParam=1.0, regParam=0.1)
