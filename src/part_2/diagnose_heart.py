@@ -20,14 +20,13 @@ import sys
 
 
 ### SPARK INSTANTIATION ###
-#TODO: check notes if the spark builder needs adjustments
 #spark builder
 #remove .master when testing on cloud
 #CHECK ANY OTHER CLOUD BUILDERS NEEDED OR NOT
 spark = (
     SparkSession.builder
     .appName("diagnose_heart")
-    .master("local[*]") #REMOVE ON CLOUD #bypasses scheduler and uses all cores...good for local dev
+    # .master("local[*]") #REMOVE ON CLOUD #bypasses scheduler and uses all cores...good for local dev
     # .config("spark.driver.bindAddress", "127.0.0.1") #REMOVE ON CLOUD #sets driver to avoid any network traffic and all done local
     .getOrCreate()
 )
@@ -41,27 +40,27 @@ sc.setLogLevel("ERROR")  # or "WARN"
 ## Load Data 
 
 #LOCAL
-local_df_path = "../../data/part_2/framingham.csv"
+# local_df_path = "../../data/part_2/framingham.csv"
 
-df = (
-    spark.read
-    .format("csv")
-    .option("header", True)
-    .option("InferSchema", True)
-    .option("nullvalue", "NA")
-    .load(local_df_path)
-)
-
-#CLOUD 
-# cloud_df_path = sys.argv[1]
 # df = (
 #     spark.read
 #     .format("csv")
 #     .option("header", True)
 #     .option("InferSchema", True)
 #     .option("nullvalue", "NA")
-#     .load(cloud_df_path)
+#     .load(local_df_path)
 # )
+
+#CLOUD 
+cloud_df_path = sys.argv[1]
+df = (
+    spark.read
+    .format("csv")
+    .option("header", True)
+    .option("InferSchema", True)
+    .option("nullvalue", "NA")
+    .load(cloud_df_path)
+)
 
 #showcases data types
 df.printSchema()
