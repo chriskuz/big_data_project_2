@@ -55,26 +55,39 @@ df = (
 
 #CLOUD 
 # cloud_df_path = sys.argv[1]
-# df.spark.read.format("csv").option("header", True).load(cloud_df_path)
+# df = (
+#     spark.read
+#     .format("csv")
+#     .option("header", True)
+#     .option("InferSchema", True)
+#     .option("nullvalue", "NA")
+#     .load(cloud_df_path)
+# )
 
-## Cleaning
-num_rows = df.count()
-print(f"\nNumber of rows in Framingham Dataset: {num_rows}\n")
-df.show(200)
+
+#showcases data types
 df.printSchema()
 
-# Step 1: Count nulls per column
+## Cleaning
+
+# Null Analysis and Cleaning
+
+#gets total rows
+num_rows = df.count()
+print(f"\nNumber of rows in Framingham Dataset: {num_rows}\n")
+
+#nulls per column counts
 null_exprs = [sum(when(col(c).isNull(), 1).otherwise(0)).alias(c) for c in df.columns]
 null_counts_df = df.select(null_exprs)
 null_counts_df.show()
 
-# Step 2: Sum all column null counts into one total value
+#sum all the nulls from the null_df
 total_nulls_expr = reduce(lambda a, b: a + b, [col(c) for c in null_counts_df.columns])
 total_nulls = null_counts_df.select(total_nulls_expr.alias("total_nulls")).first()["total_nulls"]
-
 print(f"Total nulls: {total_nulls}")
 print(f"The max possible null composition of the data: {total_nulls / num_rows}")
 
+#drops nulls
 df = df.dropna()
 purified_num_rows = df.count()
 print(f"The new row count of the purified dataframe: {purified_num_rows} ")

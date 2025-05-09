@@ -94,7 +94,7 @@ df_test = (
     .load(local_test_path)
 )
 
-#CLOUD COMMAND
+#CLOUD
 #TODO: understand what the sys arguments are going to be here. ...also copy the format as shown above
 # local_train_path = sys.argv[1]
 # local_test_path = sys.argv[1]
