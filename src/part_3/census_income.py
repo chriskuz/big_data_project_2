@@ -23,8 +23,8 @@ import sys
 spark = (
     SparkSession.builder
     .appName("cencus_income")
-    .master("local[*]") #REMOVE ON CLOUD #bypasses scheduler and uses all cores...good for local dev
-    .config("spark.driver.bindAddress", "127.0.0.1") #REMOVE ON CLOUD #sets driver to avoid any network traffic and all done local
+    #.master("local[*]") #REMOVE ON CLOUD #bypasses scheduler and uses all cores...good for local dev
+    #.config("spark.driver.bindAddress", "127.0.0.1") #REMOVE ON CLOUD #sets driver to avoid any network traffic and all done local
     .getOrCreate()
 )
 
@@ -43,14 +43,37 @@ columns = [
 ]
 
 ##LOCAL
-local_train_path = "../../data/train3.data"
-local_test_path = "../../data/test3.test"
+#local_train_path = "../../data/train3.data"
+#local_test_path = "../../data/test3.test"
+#df_train = (
+#    spark.read
+#    .format("csv")
+#    .option("header", False)
+#    .option("inferSchema", True)
+#    .load(local_train_path)
+#)
+#df_train = df_train.toDF(*columns)
+
+#df_test = (
+#    spark.read
+#    .format("csv")
+#    .option("header", False)
+#    .option("inferSchema", True)
+#    .option("comment", "|")
+#    .load(local_test_path)
+#)
+#df_test = df_test.toDF(*columns)
+
+#CLOUD
+#TODO: understand what the sys arguments are going to be here. ...also copy the format as shown above
+train_path = sys.argv[1]
+test_path = sys.argv[2] 
 df_train = (
     spark.read
     .format("csv")
     .option("header", False)
     .option("inferSchema", True)
-    .load(local_train_path)
+    .load(train_path)
 )
 df_train = df_train.toDF(*columns)
 
@@ -60,36 +83,9 @@ df_test = (
     .option("header", False)
     .option("inferSchema", True)
     .option("comment", "|")
-    .load(local_test_path)
+    .load(test_path)
 )
 df_test = df_test.toDF(*columns)
-
-#CLOUD
-#TODO: understand what the sys arguments are going to be here. ...also copy the format as shown above
-#train_path = sys.argv[1]
-#test_path = sys.argv[2] 
-#df_train = (
- #    spark.read
- #    .format("csv")
- #    .option("header", True)
- #    .option("multiline", True)
- #    .option("quote", '"')
- #    .option("escape", '"')
- #    .option("inferSchema", True)
- #    .load(train_path)
- #)
-#df_train = df_train.toDF(*columns) 
-#df_test = (
- #    spark.read
- #    .format("csv")
- #    .option("header", True)
- #    .option("multiline", True)
- #    .option("quote", '"')
- #    .option("escape", '"')
- #    .option("inferSchema", True)
- #    .load(test_path)
- #)
-#df_test = df_test.toDF(*columns)
 
 
 # Null Analysis and Cleaning for df_train
