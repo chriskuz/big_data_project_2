@@ -1,7 +1,7 @@
 #!/bin/sh
 PROJECT_DIR="/spark-examples/spark-project2/big_data_project_2"
 DATA_DIR="$PROJECT_DIR/data"
-ZIP_NAME="framingham.zip"
+ZIP_NAME="archive.zip"
 KAGGLE_USER=$(jq -r .username ~/.kaggle/kaggle.json)
 KAGGLE_KEY=$(jq -r .key ~/.kaggle/kaggle.json)
 
