@@ -4,13 +4,11 @@ Authors: Ali Nazim, Christopher Kuzemka
 
 # General Requirements
 
-- Kaggle API Key
-- Spark HDFS and Spark Runtimes
-- Python Version
-- `start.sh` as the first step
+- A Google Cluster with a Spark HDFS driver set up
+- Python 3.11+
 
 
-# Kaggle API Installation for Cluster
+## Kaggle API Installation for Cluster
 
 To access some of data in this project, you will need a Kaggle API key embedded into your cluster. [Please follow the instructions from Kaggle's documentation found by clicking here](https://www.kaggle.com/docs/api). You will need to download an API key locally, upload to main username of your cloud, and then move from your username to the root user of your cloud pending password authentication. This allows specific shell scripts to properly access some Kaggle datasets. 
 
@@ -28,7 +26,7 @@ The Logistic Regression model is implement through PySpark's Mllib module. It se
 
 Part 2 showcases how a Logistic Regression model could be used to classify symptoms of future heart failure among citizens from Framingham, Massachusettes; it isolate on which features stand the most influential for the prediction. Use of common evaluators from a confusion matrix measures the model's performance and a ranking of column importance is outputted. 
 
-A sample [solution housed here]() was leveraged to kick the project off and build off of the modularized process from Part 1. Native sample code followed a pandas process and was converted to PySpark to a necessary basic degree. More information resides in the sub-directory `src/part_2`
+A sample [solution housed here](https://www.kaggle.com/code/neisha/heart-disease-prediction-using-logistic-regression) was leveraged to kick the project off and build off of the modularized process from Part 1. Native sample code followed a pandas process and was converted to PySpark to a necessary basic degree. More information resides in the sub-directory `src/part_2`. 
 
 
 **Part 3**
@@ -37,7 +35,14 @@ A sample [solution housed here]() was leveraged to kick the project off and buil
 
 **Part 4**
 
+
+
+
 # Cloud Git Repo Location and Setup
 
-Git clone this project within your Fordham Big Data Computing Spark setup cluster into a root-user file path of `SET UP FILE PATH HERE.`
+Git clone this project within your Fordham Big Data Computing Spark setup cluster into a root-user file path of `root@manager:/spark-examples/spark-project2/big_data_project_2/` where `big_data_project_2` in this path is the cloned repo. 
+
+During this process, you should also run the `start.sh` script located at the top directory of `/spark-examples`. This must be done first before executing any of our code. 
+
+For every shell script, allow elevated access of `chmod +x <FILE NAME>`a
 
