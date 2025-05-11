@@ -206,6 +206,7 @@ rf = RandomForestClassifier(featuresCol="features", labelCol="label", numTrees=1
 rf_model = rf.fit(df_train_transformed)
 rf_predictions = rf_model.transform(df_test_transformed)
 
+print("=== Random Forest Results ===")
 rf_predictions.select("income", "label", "prediction", "probability").show(10, truncate=False)
 
 print("Random Forest Evaluation:")
@@ -225,6 +226,7 @@ dt = DecisionTreeClassifier(featuresCol="features", labelCol="label", maxDepth=1
 dt_model = dt.fit(df_train_transformed)
 dt_predictions = dt_model.transform(df_test_transformed)
 
+print("=== Decision Tree Results ===")
 dt_predictions.select("income", "label", "prediction", "probability").show(10, truncate=False)
 
 print("Decision Tree Evaluation:")
