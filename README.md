@@ -6,15 +6,17 @@ Authors: Ali Nazim, Christopher Kuzemka
 
 - Kaggle API Key
 - Spark HDFS and Spark Runtimes
+- Python Version
+- `start.sh` as the first step
 
+
+# Kaggle API Installation for Cluster
+
+To access some of data in this project, you will need a Kaggle API key embedded into your cluster. [Please follow the instructions from Kaggle's documentation found by clicking here](https://www.kaggle.com/docs/api). You will need to download an API key locally, upload to main username of your cloud, and then move from your username to the root user of your cloud pending password authentication. This allows specific shell scripts to properly access some Kaggle datasets. 
 
 # Project Summary
 
 This project features a modularized process for running classification models in a Spark environment. Processes displayed here involve the use of PySpark's MLlib to process multiple Logistic Regression models for 4 unique problems. No ML Pipeline was instantiated due to little scope of the project in terms of cluster hardware and small data. 
-
-**Kaggle API Installation for Cluster**
-
-To access some of data in this project, you will need a Kaggle API key embedded into your cluster. [Please follow the instructions from Kaggle's documentation found by clicking here](). You will need to download an API key locally, upload to main username of your cloud, and then move from your username to the root user of your cloud pending password authentication. This allows specific shell scripts to properly access some Kaggle datasets. 
 
 **Part 1**
 
@@ -34,3 +36,8 @@ A sample [solution housed here]() was leveraged to kick the project off and buil
 
 
 **Part 4**
+
+# Cloud Git Repo Location and Setup
+
+Git clone this project within your Fordham Big Data Computing Spark setup cluster into a root-user file path of `SET UP FILE PATH HERE.`
+
