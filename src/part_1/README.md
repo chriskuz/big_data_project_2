@@ -14,4 +14,4 @@ The workflow used to push the data to the cloud involved a local copy-paste up i
 
 ## Execution
 
-Provide elevated scurity acces within the repository for the shell scripts and run the `toxic_comment_classifier.sh` to begin the 
+Provide elevated scurity acces within the repository for the shell scripts and run the `toxic_comment_classifier.sh` to begin the program. The `toxic_comment_classifier.py` file will be executed in a Spark environment after this. 
