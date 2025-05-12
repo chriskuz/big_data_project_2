@@ -129,14 +129,8 @@ print(f"Precision: {evaluator_precision.evaluate(predictions):.4f}")
 print(f"Recall: {evaluator_recall.evaluate(predictions):.4f}")
 
 #Feature Importance
-# Convert NumPy float64 to native Python float
-feature_coeffs = [(name, float(coef)) for name, coef in zip(feature_cols, lr_model.coefficients)]
+feature_coeffs = [(name, float(coef)) for name, coef in zip(feature_cols, lr_model.coefficients)] #type conversion
 
-# Now create the DataFrame safely
-importance_df = spark.createDataFrame(feature_coeffs, ["feature", "coefficient"])
-
-# Add absolute value column to sort by influence
-importance_df = importance_df.withColumn("abs_coefficient", F.abs(col("coefficient")))
-
-# Display top influential features
-importance_df.orderBy(col("abs_coefficient").desc()).show(truncate=False)
+importance_df = spark.createDataFrame(feature_coeffs, ["feature", "coefficient"]) #importance df creation
+importance_df = importance_df.withColumn("abs_coefficient", F.abs(col("coefficient"))) #absolute value to showcase influence
+importance_df.orderBy(col("abs_coefficient").desc()).show(truncate=False) #ordering and display
