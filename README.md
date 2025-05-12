@@ -31,11 +31,11 @@ A sample [solution housed here](https://www.kaggle.com/code/neisha/heart-disease
 
 **Part 3**
 
-
+For part 3, we used logistic regression to analyze the UCI’s Census Income dataset, [which can be found here](https://archive.ics.uci.edu/dataset/20/census+income). The goal was to predict whether an individual’s income is higher or lower than $50K per year based on a variety of features. The implementation mirrors the general structure of Part 1, but includes additional steps for categorical variable handling, which were not necessary in Part 2.
 
 **Part 4**
 
-
+This part of the project was the same as part 3, as in we were using the same data to predict the same information, whether an individual's income is above or below $50K per year based on demographic and employment attributes. We also used the same dataset [which can be found here](https://archive.ics.uci.edu/dataset/20/census+income). The only thing that was different for this part was that instead of using a Logistic Regression model, we used a Random Forest Classifier and a Decision Tree's Classifier.
 
 
 # Cloud Git Repo Location and Setup
